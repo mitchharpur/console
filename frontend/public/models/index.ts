@@ -12,7 +12,6 @@ export const PrometheusModel: K8sKind = {
   plural: 'prometheuses',
   propagationPolicy: 'Foreground',
 };
-
 export const ServiceMonitorModel: K8sKind = {
   kind: 'ServiceMonitor',
   label: 'Service Monitor',

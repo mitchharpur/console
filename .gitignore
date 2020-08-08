@@ -1,6 +1,6 @@
 .env
 .idea
-.vscode
+#.vscode
 .protractor-fail-fast
 .DS_Store
 /bin

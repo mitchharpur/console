@@ -67,14 +67,14 @@ configureDebugEnvironment(){
   export CONSOLE_HOST_NAME=$HOSTNAME
   export CONSOLE_API_PORT=9000
   #build environment file contents
-  environmentFileContents='# '$title
-  environmentFileContents=$environmentFileContents'\nCONSOLE_CLUSTER_URL = '$CONSOLE_CLUSTER_URL
-  environmentFileContents=$environmentFileContents'\nCONSOLE_ALERTMANAGER_URL = '$CONSOLE_ALERTMANAGER_URL
-  environmentFileContents=$environmentFileContents'\nCONSOLE_THANOS_URL = '$CONSOLE_THANOS_URL
+  environmentFileContents='# '$title' #note: no spaces before and after the  = sign '
+  environmentFileContents=$environmentFileContents'\nCONSOLE_CLUSTER_URL='$CONSOLE_CLUSTER_URL
+  environmentFileContents=$environmentFileContents'\nCONSOLE_ALERTMANAGER_URL='$CONSOLE_ALERTMANAGER_URL
+  environmentFileContents=$environmentFileContents'\nCONSOLE_THANOS_URL='$CONSOLE_THANOS_URL
   
-  environmentFileContents=$environmentFileContents'\nCONSOLE_HOST_NAME = '$CONSOLE_HOST_NAME
-  environmentFileContents=$environmentFileContents'\nCONSOLE_API_PORT = '$CONSOLE_API_PORT
-  environmentFileContents=$environmentFileContents'\nCONSOLE_DEBUGGER_API_PORT = '$CONSOLE_DEBUGGER_API_PORT
+  environmentFileContents=$environmentFileContents'\nCONSOLE_HOST_NAME='$CONSOLE_HOST_NAME
+  environmentFileContents=$environmentFileContents'\nCONSOLE_API_PORT='$CONSOLE_API_PORT
+  environmentFileContents=$environmentFileContents'\nCONSOLE_DEBUGGER_API_PORT='$CONSOLE_DEBUGGER_API_PORT
   #pipe contents to the debug file
   echo -e $environmentFileContents > ./$environmentFileName
   echo -e "\n${cyan} - Cluster Url      : ${white}$CONSOLE_CLUSTER_URL"

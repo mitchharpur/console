@@ -20,11 +20,11 @@
             "stopOnEntry": true
         },
         {
-            "name": "Debug: Attach to a remote Running Bridge Cluster Proxy Process",
+            "name": "Debug: Attach to a remote Debugger Running Bridge Cluster Proxy Process",
             "type": "go",
             "request": "attach",
             "port": "${input:consoleDebuggerApiPort}",
-            "host": "http://${input:consoleHostName}",
+            "host": "${input:consoleHostName}",
             "mode": "remote",
             "processId": "${input:debuggeeProcessId}",
             "apiVersion": 2,
@@ -35,7 +35,8 @@
             "name": "Debug: Attach to a local Running Bridge Cluster Proxy Process",
             "type": "go",
             "request": "attach",
-            "host": "http://${input:consoleHostName}",
+            "host": "${input:consoleHostName}",
+            //"port": "${input:consoleDebuggerApiPort}",
             "mode": "local",
             "processId": "${input:debuggeeProcessId}",
             "apiVersion": 2,
@@ -49,8 +50,8 @@
             "request": "launch",
             "mode": "debug", // launches dlv debug command that compiles and launches debug session
             "program": "${workspaceFolder}/cmd/bridge/main.go", //path to main.main file
-            "host": "http://${input:consoleHostName}", // --listen
-            // "port": "${input:consoleDebuggerApiPort}", // --listen
+            "host": "${input:consoleHostName}", // --listen
+            //"port": "${input:consoleDebuggerApiPort}", // --listen
             "apiVersion": 2, // --api-version
             "buildFlags": "-gcflags='all=-N -l'", // --build-flags
             "cwd": "${workspaceFolder}", //--wd
@@ -82,6 +83,7 @@
             "args": {
               "fileName": "${workspaceFolder}/debug-environment.test.env",
               "key": "CONSOLE_CLUSTER_URL",
+              "default":"no-cluster-url"
             }
         },        
         {
@@ -91,6 +93,7 @@
             "args": {
               "fileName": "${workspaceFolder}/debug-environment.test.env",
               "key": "CONSOLE_ALERTMANAGER_URL",
+              "default":"no-alert-manager-url"
             }
         },        
         {
@@ -100,6 +103,7 @@
             "args": {
               "fileName": "${workspaceFolder}/debug-environment.test.env",
               "key": "CONSOLE_THANOS_URL",
+              "default":"no-thanos-url"
             }
         },        
         {
@@ -109,6 +113,7 @@
             "args": {
               "fileName": "${workspaceFolder}/debug-environment.test.env",
               "key": "CONSOLE_HOST_NAME",
+              "default":"no-host"
             }
         },        
         {
@@ -118,6 +123,7 @@
             "args": {
               "fileName": "${workspaceFolder}/debug-environment.test.env",
               "key": "CONSOLE_API_PORT",
+              "default":"no-port"
             }
         },        
         {
@@ -127,6 +133,7 @@
             "args": {
               "fileName": "${workspaceFolder}/debug-environment.test.env",
               "key": "CONSOLE_DEBUGGER_API_PORT",
+              "default":"no-debugger-port"
             }
         },        
         {

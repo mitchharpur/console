@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+#set -e
 
 #set up the debug environment and variables
 source ./debug-environment.sh

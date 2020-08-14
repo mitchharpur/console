@@ -20,14 +20,14 @@ checkClusterStatus(){
   # note: oc std error stream is redirected to std out stream in order to gep it
   declare status=$(oc status 2>&1 | head -n 1 )
   if [[ $status == *"$connectError"* ]]; then
-    echo -e "${cyan} - Status           : ${red}${bold}$status${reset}"
+    echo -e "\n${cyan} - Status           : ${red}${bold}$status${reset}"
     return 1
   fi
   if [[ $status == *"$loginError"* ]]; then
-    echo -e "${cyan} - Status           : ${red}${bold}$status${reset}"
+    echo -e "\n${cyan} - Status           : ${red}${bold}$status${reset}"
     return 2
   fi
-  echo -e "${cyan} - Status           : ${green}${bold}Cluster Available : ${reset}${status}"
+  echo -e "\n${cyan} - Status           : ${green}${bold}Cluster Available : ${reset}${status}"
   return 0    
 }
 #configure environment variables and write them to a .env file 

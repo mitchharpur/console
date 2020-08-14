@@ -20,11 +20,11 @@
             "stopOnEntry": true
         },
         {
-            "name": "Debug: Attach to a remote host delve debugger",
+            "name": "Debug: Attach to a remote Running Bridge Cluster Proxy Process",
             "type": "go",
             "request": "attach",
-            "port": 2345,
-            "host": "mac4mitch",
+            "port": "${input:consoleDebuggerApiPort}",
+            "host": "http://${input:consoleHostName}",
             "mode": "remote",
             "processId": "${input:debuggeeProcessId}",
             "apiVersion": 2,
@@ -32,23 +32,10 @@
             "cwd": "${workspaceFolder}"
         },
         {
-            "name": "Debug: Attach to a remote delve debugger",
+            "name": "Debug: Attach to a local Running Bridge Cluster Proxy Process",
             "type": "go",
             "request": "attach",
-            "port": 2345,
-            "host": "127.0.0.1",
-            "mode": "remote",
-            "processId": "${input:debuggeeProcessId}",
-            "apiVersion": 2,
-            "remotePath": "${workspaceFolder}",
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "name": "Attach to a Running Bridge Cluster Proxy Process",
-            "type": "go",
-            "request": "attach",
-            "port": 2345,
-            "host": "127.0.0.1",
+            "host": "http://${input:consoleHostName}",
             "mode": "local",
             "processId": "${input:debuggeeProcessId}",
             "apiVersion": 2,
@@ -56,86 +43,90 @@
             "cwd": "${workspaceFolder}"
         },
         {
-            "name": "Debug: Launch the Bridge Cluster Proxy",
-            "type": "go",
-            "request": "launch",
-            "mode": "debug", // launches dlv debug command that compiles and launches debug session
-            "program": "${workspaceFolder}/cmd/bridge/main.go", //path to main.main file
-            "host": "${input:hostname}", // --listen
-            // "port": 2345, // --listen
-            "apiVersion": 2, // --api-version
-            "buildFlags": "-gcflags='all=-N -l'", // --build-flags
-            "cwd": "${workspaceFolder}", //--wd
-            "showLog": true, // --log
-            "output": "${workspaceFolder}/bin/bridge ", // --output
-            "env": {},
-            "args": [ // -- 
-                "--base-address=http://${input:hostname}:9000",
-                "--ca-file=${workspaceFolder}/examples/ca.crt",
-                "--k8s-auth=openshift",
-                "--k8s-mode=off-cluster",
-                "--k8s-mode-off-cluster-endpoint=https://api.gitops1.devcluster.openshift.com:6443",
-                "--k8s-mode-off-cluster-skip-verify-tls=true",
-                "--listen=http://${input:hostname}:9000",
-                "--public-dir=${workspaceFolder}/frontend/public/dist",
-                "--user-auth=openshift",
-                "--user-auth-oidc-client-id=console-oauth-client",
-                "--user-auth-oidc-client-secret-file=${workspaceFolder}/examples/console-client-secret",
-                "--user-auth-oidc-ca-file=${workspaceFolder}/examples/ca.crt",
-                "--k8s-mode-off-cluster-alertmanager=https://alertmanager-main-openshift-monitoring.apps.gitops1.devcluster.openshift.com",
-                "--k8s-mode-off-cluster-thanos=https://thanos-querier-openshift-monitoring.apps.gitops1.devcluster.openshift.com",
-            ]
-        },
-        {
-            "preLaunchTask": "exampleTask",
+            "preLaunchTask": "SetConsoleDebuggerEnvironment",
             "name": "Debug: Launch and debug the Bridge Cluster Proxy",
             "type": "go",
             "request": "launch",
             "mode": "debug", // launches dlv debug command that compiles and launches debug session
             "program": "${workspaceFolder}/cmd/bridge/main.go", //path to main.main file
-            "host": "${input:hostname}", // --listen
-            // "port": 2345, // --listen
+            "host": "http://${input:consoleHostName}", // --listen
+            // "port": "${input:consoleDebuggerApiPort}", // --listen
             "apiVersion": 2, // --api-version
             "buildFlags": "-gcflags='all=-N -l'", // --build-flags
             "cwd": "${workspaceFolder}", //--wd
             "showLog": true, // --log
             "output": "${workspaceFolder}/bin/bridge ", // --output
-            "envFile": "${workspaceFolder}/debug.env",
-            "env":{
-                "BRIDGE_CLUSTER_URL":"abc"
-            },
-            "osx": {
-                "environment":[
-                    {"name":"BRIDGE_CLUSTER_URL","value":"def"  }
-                ]
-            },
             "args": [
-                "--base-address=http://${env:HOSTNAME}:9000",
+                "--base-address=http://${input:consoleHostName}:${input:consoleApiPort}",
                 "--ca-file=${workspaceFolder}/examples/ca.crt",
                 "--k8s-auth=openshift",
                 "--k8s-mode=off-cluster",
-                "--k8s-mode-off-cluster-endpoint=${input:k8sClusterUrl}",
+                "--k8s-mode-off-cluster-endpoint=${input:consoleClusterUrl}",
                 "--k8s-mode-off-cluster-skip-verify-tls=true",
-                "--listen=http://${env:HOSTNAME}:9000",
+                "--listen=http://${input:consoleHostName}:${input:consoleApiPort}",
                 "--public-dir=${workspaceFolder}/frontend/public/dist",
                 "--user-auth=openshift",
                 "--user-auth-oidc-client-id=console-oauth-client",
                 "--user-auth-oidc-client-secret-file=${workspaceFolder}/examples/console-client-secret",
                 "--user-auth-oidc-ca-file=${workspaceFolder}/examples/ca.crt",
-                "--k8s-mode-off-cluster-alertmanager=${env:BRIDGE_ALERTMANAGER_URL}",
-                "--k8s-mode-off-cluster-thanos=${env:BRIDGE_THANOS_URL}",
+                "--k8s-mode-off-cluster-alertmanager=${input:consoleAlertManagerUrl}",
+                "--k8s-mode-off-cluster-thanos=${input:consoleThanosUrl}",
             ]
         }
     ],
     "inputs": [
         {
-            "id": "k8sClusterUrl",
+            "id": "consoleClusterUrl",
             "type": "command",
             "command": "extension.commandvariable.file.content",
             "args": {
-              "fileName": "${workspaceFolder}/debug.env",
-              "key": "BRIDGE_CLUSTER_URL",
-              "default": "no-cluster"
+              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "key": "CONSOLE_CLUSTER_URL",
+            }
+        },        
+        {
+            "id": "consoleAlertManagerUrl",
+            "type": "command",
+            "command": "extension.commandvariable.file.content",
+            "args": {
+              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "key": "CONSOLE_ALERTMANAGER_URL",
+            }
+        },        
+        {
+            "id": "consoleThanosUrl",
+            "type": "command",
+            "command": "extension.commandvariable.file.content",
+            "args": {
+              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "key": "CONSOLE_THANOS_URL",
+            }
+        },        
+        {
+            "id": "consoleHostName",
+            "type": "command",
+            "command": "extension.commandvariable.file.content",
+            "args": {
+              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "key": "CONSOLE_HOST_NAME",
+            }
+        },        
+        {
+            "id": "consoleApiPort",
+            "type": "command",
+            "command": "extension.commandvariable.file.content",
+            "args": {
+              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "key": "CONSOLE_API_PORT",
+            }
+        },        
+        {
+            "id": "consoleDebuggerApiPort",
+            "type": "command",
+            "command": "extension.commandvariable.file.content",
+            "args": {
+              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "key": "CONSOLE_DEBUGGER_API_PORT",
             }
         },        
         {

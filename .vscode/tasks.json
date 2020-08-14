@@ -4,25 +4,54 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Start Delve Debugger",
+            "label": "StartRemoteDelveDebugger",
             "type": "shell",
-            "command": "dlv",
-            "args": [
-                "debug",
-                "--output=./cmd/bridge",
-                "--api-version=2",
-                "--headless",
-                "--accept-multiclient",
-                "--log",
-                "--listen=127.0.0.1:2345",
-                "--wd=${workspaceFolder}"
-            ],
+            "command": "./debug-backend.sh",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$go"
             ]
+        },
+        {
+            "label": "SetBridgeEnvironment",
+            "type": "shell",
+            "runOptions": {},
+            "promptOnClose": false,
+            "isBackground": false,
+            "command": "echo 'Checking cluster status...' source debug-environment.sh export BRIDGE_CLUSTER_URL BRIDGE_ALERTMANAGER_URL BRIDGE_THANOS_URL echo BRIDGE_CLUSTER_URL exit ",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": [
+                "$go"
+            ]
+        },
+        {
+            "label": "exampleTask",
+            "type" : "shell",
+            "command":". ./debug-environment.sh ; set BRIDGE_CLUSTER_URL= ghi ; echo url is $BRIDGE_CLUSTER_URL ",
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
         }
     ]
 }

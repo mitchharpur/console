@@ -10,4 +10,4 @@ export GOFLAGS="-mod=vendor"
 
 GIT_TAG=${SOURCE_GIT_TAG:-$(git describe --always --tags HEAD)}
 LD_FLAGS="-w -X github.com/openshift/console/pkg/version.Version=${GIT_TAG}"
-go build -gcflags='all=-N -l' ./cmd/bridge -o bin/bridge 
+go build -gcflags='all=-N -l' ./cmd/bridge -o ./bin/bridge 

@@ -4,9 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "LaunchConsoleDebugger",
+            "label": "LaunchConsoleDebugSession",
             "type": "shell",
-            "command": "./debug-console.sh",
+            "command": "./debug-launch.sh",
             "options": {
                 "cwd": "${workspaceFolder}"
             },

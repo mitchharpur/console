@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Webpack Dev Server",
+            "name": "Debug: Launch the Console Frontend",
             "program": "./frontend/node_modules/.bin/webpack-dev-server",
             "request": "launch",
             "skipFiles": [
@@ -20,32 +20,8 @@
             "stopOnEntry": true
         },
         {
-            "name": "Debug: Attach to a remote Debugger Running Bridge Cluster Proxy Process",
-            "type": "go",
-            "request": "attach",
-            "port": "${input:consoleDebuggerApiPort}",
-            "host": "${input:consoleHostName}",
-            "mode": "remote",
-            "processId": "${input:debuggeeProcessId}",
-            "apiVersion": 2,
-            "remotePath": "${workspaceFolder}",
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "name": "Debug: Attach to a local Running Bridge Cluster Proxy Process",
-            "type": "go",
-            "request": "attach",
-            "host": "${input:consoleHostName}",
-            //"port": "${input:consoleDebuggerApiPort}",
-            "mode": "local",
-            "processId": "${input:debuggeeProcessId}",
-            "apiVersion": 2,
-            "remotePath": "${workspaceFolder}",
-            "cwd": "${workspaceFolder}"
-        },
-        {
             "preLaunchTask": "SetConsoleDebuggerEnvironment",
-            "name": "Debug: Launch and debug the Bridge Cluster Proxy",
+            "name": "Debug: Launch the Console Backend",
             "type": "go",
             "request": "launch",
             "mode": "debug", // launches dlv debug command that compiles and launches debug session
@@ -73,6 +49,18 @@
                 "--k8s-mode-off-cluster-alertmanager=${input:consoleAlertManagerUrl}",
                 "--k8s-mode-off-cluster-thanos=${input:consoleThanosUrl}",
             ]
+        },
+        {
+            "name": "Debug: Attach to a Running Console Backend",
+            "type": "go",
+            "request": "attach",
+            "host": "${input:consoleHostName}",
+            "port": "${input:consoleDebuggerApiPort}",
+            "mode": "remote",
+            "processId": "${input:debuggeeProcessId}",
+            "apiVersion": 2,
+            "remotePath": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}"
         }
     ],
     "inputs": [
@@ -81,7 +69,7 @@
             "type": "command",
             "command": "extension.commandvariable.file.content",
             "args": {
-              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "fileName": "${workspaceFolder}/debug-environment.env",
               "key": "CONSOLE_CLUSTER_URL",
               "default":"no-cluster-url"
             }
@@ -91,7 +79,7 @@
             "type": "command",
             "command": "extension.commandvariable.file.content",
             "args": {
-              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "fileName": "${workspaceFolder}/debug-environment.env",
               "key": "CONSOLE_ALERTMANAGER_URL",
               "default":"no-alert-manager-url"
             }
@@ -101,7 +89,7 @@
             "type": "command",
             "command": "extension.commandvariable.file.content",
             "args": {
-              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "fileName": "${workspaceFolder}/debug-environment.env",
               "key": "CONSOLE_THANOS_URL",
               "default":"no-thanos-url"
             }
@@ -111,7 +99,7 @@
             "type": "command",
             "command": "extension.commandvariable.file.content",
             "args": {
-              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "fileName": "${workspaceFolder}/debug-environment.env",
               "key": "CONSOLE_HOST_NAME",
               "default":"no-host"
             }
@@ -121,7 +109,7 @@
             "type": "command",
             "command": "extension.commandvariable.file.content",
             "args": {
-              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "fileName": "${workspaceFolder}/debug-environment.env",
               "key": "CONSOLE_API_PORT",
               "default":"no-port"
             }
@@ -131,19 +119,11 @@
             "type": "command",
             "command": "extension.commandvariable.file.content",
             "args": {
-              "fileName": "${workspaceFolder}/debug-environment.test.env",
+              "fileName": "${workspaceFolder}/debug-environment.env",
               "key": "CONSOLE_DEBUGGER_API_PORT",
               "default":"no-debugger-port"
             }
         },        
-        {
-            "type": "command",
-            "id": "hostname",
-            "command": "shellCommand.execute",
-            "args": {
-                "command": "echo $HOSTNAME",
-            },
-        },
         {
             "type": "command",
             "id": "debuggeeProcessId",
@@ -151,34 +131,6 @@
             "args": {
                 "command": "pgrep bridge",
             }
-        },
-        {
-            "id": "clusterEndpoint",
-            "type": "command",
-            "command": "shellCommand.execute",
-            "args": {
-                "command": " oc whoami --show-server",
-                "cwd": "${workspaceFolder}",
-            },
-            "default": "https://api.gitops1.devcluster.openshift.com:6443"
-        },
-        {
-            "id": "alertManagerEndpoint",
-            "type": "command",
-            "command": "shellCommand.execute",
-            "args": {
-                "command": "oc -n openshift-config-managed get configmap monitoring-shared-config -o jsonpath='{.data.alertmanagerPublicURL}'",
-            },
-            "default": "https://alertmanager-main-openshift-monitoring.apps.gitops1.devcluster.openshift.com"
-        },
-        {
-            "id": "thanosEndpoint",
-            "type": "command",
-            "command": "shellCommand.execute",
-            "args": {
-                "command": "oc -n openshift-config-managed get configmap monitoring-shared-config -o jsonpath='{.data.thanosPublicURL}'",
-            },
-            "default": "https://thanos-querier-openshift-monitoring.apps.gitops1.devcluster.openshift.com"
         }
     ]
 }

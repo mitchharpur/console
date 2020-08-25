@@ -20,6 +20,9 @@ consoleClusterUrl=$CONSOLE_CLUSTER_URL
 consoleAlertManagerUrl=$CONSOLE_ALERTMANAGER_URL
 consoleThanosUrl=$CONSOLE_THANOS_URL
 
+# update resources retrieved from the cluster
+source ./debug-get-oauth-secret.sh
+source ./debug-get-ca-certificate.sh
 
 dlv debug \
 ./cmd/bridge/main.go \
@@ -36,7 +39,7 @@ dlv debug \
 --ca-file=examples/ca.crt \
 --k8s-auth=openshift \
 --k8s-mode=off-cluster \
---k8s-mode-off-cluster-endpoint="$(oc whoami --show-server)" \
+--k8s-mode-off-cluster-endpoint=${consoleClusterUrl} \
 --k8s-mode-off-cluster-skip-verify-tls=true \
 --listen=http://${consoleHost}:${consoleApiPort} \
 --public-dir=./frontend/public/dist \
